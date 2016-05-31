@@ -1338,18 +1338,29 @@ var NodeInterfaceAttributes = React.createClass({
   getInterfacePropertyError() {
     return this.props.errors[this.state.activeInterfaceSectionName] || null;
   },
+
+
   onInterfacePropertiesChange(name, value) {
-    function convertToNullIfNaN(value) {
-      var convertedValue = parseInt(value, 10);
-      return _.isNaN(convertedValue) ? null : convertedValue;
-    }
     if (_.includes(['mtu', 'sriov.sriov_numvfs'], name)) {
-      value = convertToNullIfNaN(value);
+      value = parseInt(value, 10) || 0;
     }
     var interfaceProperties = _.cloneDeep(this.props.interface.get('interface_properties') || {});
     _.set(interfaceProperties, name, value);
     this.props.interface.set('interface_properties', interfaceProperties);
+
+    // if (_.includes(['mtu', 'sriov.sriov_numvfs'], name)) {
+    //   this.props.interface.get('interface_properties').find({name}).set({ui_value});
+    // }
   },
+
+
+  // onInterfacePropertiesChange(name, value) {
+  //   if (_.includes(['mtu', 'sriov.sriov_numvfs'], name)) {
+  //     value = parseInt(value, 10) || 0;
+  //   }
+  //   this.props.interface.get('interface_properties').find({name}).set({value});
+  // },
+
   toggleOffloading() {
     var interfaceProperties = this.props.interface.get('interface_properties');
     var name = 'disable_offloading';
